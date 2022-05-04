@@ -4,6 +4,7 @@ import TowerComp from "./components/TowerComp";
 import WinMessageComp from "./components/WinMessageComp";
 import Tower from "./utils/Tower";
 import "./App.css";
+import deepCopy from "./helpers/deepCopy";
 
 const App = () => {
   //Contar el numero de movimientos
@@ -45,6 +46,7 @@ const App = () => {
   //Esta actualización se hará con cada movimiento de las torres
   useEffect(() => {
     setTiles(towerOne.disks.traverse());
+    console.log(towerOne);
   }, [towerOne]);
 
   useEffect(() => {
@@ -57,7 +59,8 @@ const App = () => {
 
   const reset = () => {
     //Resetear las torres
-    setTowerOne(new Tower());
+    towerOne = new Tower();
+    setTowerOne(towerOne);
     setTowerTwo(new Tower());
     setTowerThree(new Tower());
     //Resetear el contador de movimientos
@@ -66,6 +69,7 @@ const App = () => {
     for (let i = disks; i > 0; i--) {
       towerOne.add(i);
     }
+    setTowerOne(towerOne)
   };
 
   const handleDrag = (e, tile, id) => {
@@ -92,7 +96,13 @@ const App = () => {
 
   const solve = () => {
     //Resolver el juego
+    towerOne.setTower=setTowerOne.bind(setTowerOne);
+    towerTwo.setTower=setTowerTwo.bind(setTowerTwo);
+    towerThree.setTower=setTowerThree.bind(setTowerThree);
     towerOne.moveDisks(disks, towerThree, towerTwo);
+    setTowerOne(deepCopy(towerOne));
+    setTowerTwo(deepCopy(towerTwo));
+    setTowerThree(deepCopy(towerThree));
   };
 
   const winCondition = false; //COMPLETAR
