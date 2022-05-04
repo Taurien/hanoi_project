@@ -21,6 +21,7 @@ class Tower {
       this.moveDisks(n - 1, buffer, target);
       this.moveTopTo(target);
       buffer.moveDisks(n - 1, target, this);
+      
       this.setTower(this);
     }
   }
