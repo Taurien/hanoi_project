@@ -20,10 +20,11 @@ const App = () => {
   const [tilesThree, setTilesThree] = useState([]);
 
   //Las 3 torres (columnas)
-  let [towerOne, setTowerOne] = useState(new Tower());
-  let [towerTwo, setTowerTwo] = useState(new Tower());
-  let [towerThree, setTowerThree] = useState(new Tower());
+  let [towerOne, setTowerOne] = useState(new Tower('tower1'));
+  let [towerTwo, setTowerTwo] = useState(new Tower('tower2'));
+  let [towerThree, setTowerThree] = useState(new Tower('tower3'));
 
+  //Los discos de cada torre (1, 2, 3)
   const towers = {
     1: {
       tower: towerOne,
@@ -46,7 +47,6 @@ const App = () => {
   //Esta actualización se hará con cada movimiento de las torres
   useEffect(() => {
     setTiles(towerOne.disks.traverse());
-    console.log(towerOne);
   }, [towerOne]);
 
   useEffect(() => {
@@ -57,25 +57,35 @@ const App = () => {
     setTilesThree(towerThree.disks.traverse());
   }, [towerThree]);
 
+  //Actualizar el disco que se está movimiendo
+  const updateTiles = () => {
+    setTiles(towerOne.disks.traverse());
+    setTilesTwo(towerTwo.disks.traverse());
+    setTilesThree(towerThree.disks.traverse());
+  }
+
+  //Resetear las torres
   const reset = () => {
+    let tower1 = new Tower('tower1');
+    let tower2 = new Tower('tower2');
+    let tower3 = new Tower('tower3');
+    //Añadir discos a las torres
+    for (let i = disks; i > 0; i--) {
+      tower1.add(i);
+    }
     //Resetear las torres
-    towerOne = new Tower();
-    setTowerOne(towerOne);
-    setTowerTwo(new Tower());
-    setTowerThree(new Tower());
+    setTowerOne(tower1);
+    setTowerTwo(tower2);
+    setTowerThree(tower3);
     //Resetear el contador de movimientos
     setMoveCount(0);
-    //añaadir los discos a la torre principal
-    for (let i = disks; i > 0; i--) {
-      towerOne.add(i);
-    }
-    setTowerOne(towerOne)
+    
   };
 
   const handleDrag = (e, tile, id) => {
     //Funcion que se lanza cada vez que movemos un disco que se encuentra en la parte superior de una torre
     const dragTile = { tile, towerId: id };
-    if (towers[id].tower.disks.top === dragTile.tile) {
+    if (towers[id].tower.disks.head === dragTile.tile) {
       setDragTile(dragTile);
     } else {
       e.preventDefault();
@@ -83,6 +93,7 @@ const App = () => {
   };
 
   const handleDrop = (e) => {
+    console.log(`Dropping ${dragTile.tile.value}`);
     //Funcion que se lanza cada vez que un disco se deja en una nueva torre 
     const dropColumn = e.currentTarget.id; //ID de la columna de destino
     let source = towers[dragTile.towerId].tower; //Torre de origen
@@ -90,15 +101,14 @@ const App = () => {
 
     const goodMove = source.moveTopTo(destination); //Mover el disco desde la torre de origen al destino
     if(goodMove){ //Si es un movimiento valido -> incrementar los movimientos
-      setMoveCount((prevState) => prevState + 1); //Actualizar los movimientos
+      setMoveCount((n) => n + 1); //Actualizar los movimientos
     }
+    updateTiles(); //Actualizar las torres
   };
 
   const solve = () => {
     //Resolver el juego
-    towerOne.setTower=setTowerOne.bind(setTowerOne);
-    towerTwo.setTower=setTowerTwo.bind(setTowerTwo);
-    towerThree.setTower=setTowerThree.bind(setTowerThree);
+    
     towerOne.moveDisks(disks, towerThree, towerTwo);
     setTowerOne(deepCopy(towerOne));
     setTowerTwo(deepCopy(towerTwo));
