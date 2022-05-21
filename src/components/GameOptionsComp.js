@@ -5,24 +5,23 @@ const GameOptionsComp = ({ disks, solve, reset, setDisks }) => {
     <Row>
       <Col>
         <span>Discos: {disks}</span>
-        <Button
-          variant="outline-secondary"
-          onClick={() => setDisks(disks + 1)}
-        >
+        <Button variant="outline-secondary" onClick={() => setDisks(disks + 1)}>
           +
         </Button>
         <Button
           variant="outline-secondary"
-          onClick={() => setDisks(disks - 1)}
+          onClick={() => {
+            if (disks > 1) setDisks(disks - 1);
+          }}
         >
           -
         </Button>
       </Col>
       <Col>
-        <Button variant="outline-secondary" onClick={()=>reset()}>
+        <Button variant="outline-secondary" onClick={() => reset()}>
           Reiniciar
         </Button>
-        <Button variant="outline-secondary" onClick={()=>solve()}>
+        <Button variant="outline-secondary" onClick={() => solve()}>
           Resolver
         </Button>
       </Col>

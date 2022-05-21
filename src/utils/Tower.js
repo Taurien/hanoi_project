@@ -30,11 +30,12 @@ class Tower {
     }
   }
 
-  moveDisks(n, target, buffer) {
+  // generador de movimientos
+  *moveDisks(n, target, buffer) {
     if (n > 0) {
-      this.moveDisks(n - 1, buffer, target);
-      this.moveTopTo(target);
-      buffer.moveDisks(n - 1, target, this);
+      yield *this.moveDisks(n - 1, buffer, target);
+      yield this.moveTopTo(target);
+      yield *buffer.moveDisks(n - 1, target, this);
     }
   }
 }
